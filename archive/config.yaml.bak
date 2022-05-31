@@ -1,7 +1,8 @@
-scope: knb-lter-cap
-identifier: 702
+packageNum: 702
+packageIdent: knb-lter-cap.702.1
 baseURL: https://data.gios.asu.edu/datasets/cap/
 project: lter
 title: 'Stormwater Nitrogen in Arizona (SNAZ): runoff and stormwater-mediated export from urbanized catchments within the greater Phoenix metropolitan area, Arizona, USA (2010-2012)'
 maintenance: none
-geographic_description: 'Indian Bend Wash watershed in Scottsdale, Arizona and a watershed contributing to Kiwanis Park in Tempe, Arizona (USA)'
+geographicCoverage:
+  geographicDescription: 'Indian Bend Wash watershed in Scottsdale, Arizona and a watershed contributing to Kiwanis Park in Tempe, Arizona (USA)'
