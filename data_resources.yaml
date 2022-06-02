@@ -1,0 +1,6 @@
+runoff_chemistry:
+  type: table
+  dfname: runoff_chemistry
+  description: "chemistry of runoff-generating storms at CAP LTER Stormwater Nitrogen in Arizona (SNAZ) project sampling sites"
+  overwrite: TRUE
+  projectNaming: TRUE

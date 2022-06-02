@@ -1,31 +1,9 @@
-# knb-lter-cap.624: CAP LTER stormwater
+# knb-lter-cap.702: Stormwater Nitrogen in Arizona (SNAZ)
 
-### knb-lter-cap.624.4 *2022-01-29*
+Dataset pertaining to data collected as part of the Stormwater Nitrogen in Arizona (SNAZ) project. All of these have been published previously in the CAP LTER long-term stormwater monitoring dataset (knb-lter-cap.624). This subset of stormwater data are pulled out and published separately here as many data elements (e.g., precipitation) and SNAZ-specific sites (e.g., Montessori) are specific to the SNAZ project. Although very much related and publishing the SNAZ and long-term stormwater data together makes sense in many respects, it was also contributing to some confusion where investigators using the stormwater dataset (knb-lter-cap.624) were flummoxed by the limited temporal coverage of data at some (in fact most) sites (i.e., the SNAZ sites). The provenances of this dataset and knb-lter-cap.624 are cross-referenced and both datasets are highlighted on the CAP LTER website to increase cross-discoverability.
 
-- data refresh
-- convert attributes and factors to yaml style
+Most data in this package are restricted to the SNAZ sites: 'KP', 'CB', 'PIE', 'MR', 'MS', 'SW', 'BV', and 'ENC'. For the most part, this does not include data from SGC, LM, and IBW because, while those also contributed to the SNAZ project, they are the long-term sites with on-going data collection reflected in knb-lter-cap.624 so there is not a need to duplicate those data here. An exception are the rainfall data for which data from SGC and LM are included since rainfall is not part of the long-term monitoring and thus not included in knb-lter-cap.624. Because rainfall data from all sites are featured here, location data for SGC, LM, and IBW are included here also. In addition, discharge data from LM and SGC are included here as well. Although CAP continues to collect level data at those sites, the level data are not converted to a discharge estimate. Thus, discharge data from LM and SGC are included here where depth to Q measurements were made as part of the SNAZ project. Discharge data from those sites are presented only through the end of the SNAZ project (ca. August 2012).
 
+### knb-lter-cap.702.1 *2022-06-01*
 
-### knb-lter-cap.624.3
-
-* workflow updated to capeml featuring config.yaml
-* pH included with runoff_chemistry; temperature not included owing to the
-  inherent meaningless of that measurement in this context; salinity and TDS
-  (meter) not included owing to very scant values for those measurements; pH
-  not recorded on rain samples
-* improved location description
-* locations from table to kml
-
-
-### knb-lter-cap.624.2
-
-This version 624.2 is a new workflow based on the Rmd format. There are new
-data available but, in the interest of time for the review, only data currently
-in the database at the time of construction are going into this version 2. More
-recent data and the discharge project stuff at the Salt River sites need to go
-into a version 3 soon.
-
-Note that this new workflow if pretty-much hit the button and everything should
-be built. Still not addressed at in this current configuration, however, are
-the keyword attributes, so those still have to be done by hand. Note also that
-the kml file is going to be overwritten every time.
+The first and, ideally, only version of this dataset.

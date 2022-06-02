@@ -181,7 +181,8 @@ rainfall_desc <- "amount of precipitation as measured by tipping-bucket rain gau
 rainfall_DT <- capeml::create_dataTable(
   dfname         = rainfall,
   description    = rainfall_desc,
-  dateRangeField = "rain_datetime"
+  dateRangeField = "rain_datetime",
+  overwrite      = TRUE
 )
 
 ```
@@ -190,7 +191,7 @@ rainfall_DT <- capeml::create_dataTable(
 
 ```{r discharge}
 
-discharge_query <- glue::glue_sql("
+snaz_q_query <- glue::glue_sql("
 SELECT
   sites.abbreviation AS discharge_location,
   r.event_datetime AS discharge_datetime,
@@ -207,7 +208,7 @@ WHERE
 .con = DBI::ANSI()
 )
 
-discharge <- DBI::dbGetQuery(pg, discharge_query)
+snaz_q <- DBI::dbGetQuery(pg, snaz_q_query)
 
 lm_sgc_q_query <- glue::glue_sql("
 SELECT
@@ -221,7 +222,8 @@ FROM
   JOIN stormwater.sites ON (r.site_id = sites.site_id)
 WHERE
   sites.abbreviation IN ('SGC', 'LM') AND
-  (r.discharge IS NOT NULL OR r.discharge_corrected IS NOT NULL)
+  -- (r.discharge IS NOT NULL OR r.discharge_corrected IS NOT NULL)
+  r.event_datetime <= '2012-08-24'
 ;
 ",
 .con = DBI::ANSI()
@@ -229,13 +231,16 @@ WHERE
 
 lm_sgc_q <- DBI::dbGetQuery(pg, lm_sgc_q_query)
 
-discharge <- discharge |>
-dplyr::arrange(
-  discharge_location,
-  discharge_datetime
+discharge <- dplyr::bind_rows(
+    snaz_q,
+    lm_sgc_q
   ) |>
-dplyr::mutate(
-  discharge_location = as.factor(discharge_location)
+  dplyr::arrange(
+    discharge_location,
+    discharge_datetime
+    ) |>
+  dplyr::mutate(
+    discharge_location = as.factor(discharge_location)
   )
 
 try({
@@ -508,7 +513,7 @@ metadataProvider <- list(
 
 begindate <- format(min(runoff_chemistry$runoff_datetime), "%Y-%m-%d")
 enddate   <- format(max(runoff_chemistry$runoff_datetime), "%Y-%m-%d")
-geo_desc  <- yaml::yaml.load_file("config.yaml")$geographicCoverage$geographicDescription
+geo_desc  <- yaml::yaml.load_file("config.yaml")[["geographic_description"]]
 
 coverage <- EML::set_coverage(
   begin                 = begindate,
@@ -605,14 +610,14 @@ capeml::write_cap_eml()
 if (!file.exists("config.yaml")) {
   stop("config.yaml not found")
 }
-packageIdent <- yaml::yaml.load_file("config.yaml")$packageIdent
-packageNum   <- yaml::yaml.load_file("config.yaml")$packageNum
+package_id <- eml[["packageId"]]
+identifier <- yaml::yaml.load_file("config.yaml")$identifier
 ```
 
 ```{r preview-data-file-to-upload}
 
 # preview data set files that will be uploaded to S3
-list.files(pattern = paste0(packageNum, "_"))
+list.files(pattern = paste0(identifier, "_"))
 ```
 
 Move data and final xml files to respective ASU locations.
@@ -627,7 +632,7 @@ source("~/Documents/localSettings/aws.s3")
 ```{r upload-data-S3}
 
 # upload files to S3
-lapply(list.files(pattern = paste0(packageNum, "_")), gioseml::data_to_amz)
+lapply(list.files(pattern = paste0(identifier, "_")), gioseml::data_to_amz)
 ```
 
 
@@ -649,7 +654,7 @@ EDIutils::login(
 ```{r edi-evaluate, eval=TRUE, echo=TRUE, message=TRUE}
 
 evaluation <- EDIutils::evaluate_data_package(
-  eml         = paste0(packageIdent, ".xml"),
+  eml         = paste0(eml[["packageId"]], ".xml"),
   useChecksum = FALSE,
   env         = "staging"
 )
@@ -681,12 +686,12 @@ if (eval_status) {
 
 ```
 
-## EDI: update
+## EDI: create
 
-```{r edi-update, eval=TRUE, echo=TRUE, message=TRUE}
+```{r edi-create, eval=TRUE, echo=TRUE, message=TRUE}
 
 EDIutils::update_data_package(
-  eml         = paste0(packageIdent, ".xml"),
+  eml         = paste0(eml[["packageId"]], ".xml"),
   env         = "production"
 )
 
@@ -704,7 +709,7 @@ EDIutils::logout()
 ```{r clean-up}
 
 # remove data files
-dataFilesToRemove <- dir(pattern = paste0(packageNum, "_"))
+dataFilesToRemove <- dir(pattern = paste0(identifier, "_"))
 file.remove(dataFilesToRemove)
 
 # EML to S3

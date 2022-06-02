@@ -22,7 +22,7 @@
     unit: 'literPerSecond'
     numberType: real
     minimum: 0.0
-    maximum: 10135.761
+    maximum: 21704.24
     columnClasses: numeric
   edited_discharge:
     attributeName: edited_discharge
@@ -30,5 +30,5 @@
     unit: 'literPerSecond'
     numberType: real
     minimum: -2.581
-    maximum: 10135.761
+    maximum: 21704.24
     columnClasses: numeric

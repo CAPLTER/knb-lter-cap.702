@@ -3,8 +3,6 @@
       attributeName: runoff_location
       levels:
       - code: BV
-        definition: metadata_not_provided
-      - code: BV
         definition: 'Scottsdale Arizona: Bella Vista'
       - code: CB
         definition: 'Scottsdale Arizona: Indian Bend Wash at Camelback Road'
