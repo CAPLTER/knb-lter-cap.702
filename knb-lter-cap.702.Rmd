@@ -555,6 +555,9 @@ citations <- list(
 
 # customUnits
 
+Note that eval is set to `FALSE`; this is intentional as this unit is not
+applied.
+
 ```{r custom-units, eval=FALSE}
 
 custom_units <- rbind(
@@ -686,12 +689,13 @@ if (eval_status) {
 
 ```
 
-## EDI: create
+## EDI: update
 
-```{r edi-create, eval=TRUE, echo=TRUE, message=TRUE}
+```{r edi-update, eval=TRUE, echo=TRUE, message=TRUE}
 
 EDIutils::update_data_package(
   eml         = paste0(eml[["packageId"]], ".xml"),
+  useChecksum = TRUE,
   env         = "production"
 )
 
